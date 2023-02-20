@@ -18,9 +18,13 @@ Route::get('/login', function ()
 
 Route::get('/post/{id}', function ($id)
 {
-    return view('pages/post', ['id'=>$id]);
+    return view('pages/post', ['id' => $id]);
 })->name('post');
 
+Route::get('/user/{name}', function ($name)
+{
+    return view('pages/user', ['name' => $name]);
+})->name('user');
 
 Route::any(
     '/logout',

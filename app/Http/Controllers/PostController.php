@@ -8,6 +8,36 @@ use App\Http\Controllers\UserController;
 
 class PostController extends Controller
 {
+    public function getAllPostsFromAuthor(?int $id = null)
+    {
+        $likeController = new LikeController();
+        $userController = new UserController();
+        $posts = Post::orderByDesc('post_date')->where('author', $id)->get();
+
+        $data = [];
+        foreach ($posts as $post)
+        {
+            if ($post->author_id != null)
+            {
+                $data[] = [
+                    'parent' => $post->parent,
+                    'id' => $post->id,
+                    'message' => $post->message,
+                    'author' => $userController->getUser($post->author_id),
+                    'media_1' => $post->media_1,
+                    'media_2' => $post->media_2,
+                    'media_3' => $post->media_3,
+                    'media_4' => $post->media_4,
+                    'post_date' => $post->post_date->format('Y-m-d H:i:s'),
+                    'is_liked' => $likeController->isLiked($post->id),
+                    'likes' => intval($likeController->countLikes($post->id)),
+                    'comments' => Post::orderByDesc('post_date')->where('parent', $post->id)->get()->count(),
+                ];
+            }
+        }
+
+        return $data;
+    }
     public function getAllPosts(?int $id = null)
     {
         $likeController = new LikeController();
@@ -17,7 +47,8 @@ class PostController extends Controller
         $data = [];
         foreach ($posts as $post)
         {
-            if ($post->author_id != null) {
+            if ($post->author_id != null)
+            {
                 $data[] = [
                     'parent' => $post->parent,
                     'id' => $post->id,
@@ -61,25 +92,52 @@ class PostController extends Controller
 
 
     public function show($id)
-{
-    $userController = new UserController();
-    $likeController = new LikeController();
-    $post = Post::find($id);
-    return [
-        'parent' => '',
-        'id' => $post->id,
-        'message' => $post->message,
-        'author' => $userController->getUser($post->author_id),
-        'media_1' => $post->media_1,
-        'media_2' => $post->media_2,
-        'media_3' => $post->media_3,
-        'media_4' => $post->media_4,
-        'post_date' => $post->post_date->format('Y-m-d H:i:s'),
-        'is_liked' => $likeController->isLiked($post->id),
-        'likes' => intval($likeController->countLikes($post->id)),
-        'comment' => $this->getAllPosts($post->id)
-    ];
-}
+    {
+        $userController = new UserController();
+        $likeController = new LikeController();
+        $post = Post::find($id);
+        return [
+            'parent' => '',
+            'id' => $post->id,
+            'message' => $post->message,
+            'author' => $userController->getUser($post->author_id),
+            'media_1' => $post->media_1,
+            'media_2' => $post->media_2,
+            'media_3' => $post->media_3,
+            'media_4' => $post->media_4,
+            'post_date' => $post->post_date->format('Y-m-d H:i:s'),
+            'is_liked' => $likeController->isLiked($post->id),
+            'likes' => intval($likeController->countLikes($post->id)),
+            'comment' => $this->getAllPosts($post->id)
+        ];
+    }
+
+    public function getPostsFromUser($id)
+    {
+        $userController = new UserController();
+        $likeController = new LikeController();
+        $posts = Post::where('author_id', $id)->get();
+        $data = [];
+        foreach ($posts as $post)
+        {
+            array_push($data, [
+                'parent' => $post->parent,
+                'id' => $post->id,
+                'message' => $post->message,
+                'author' => $userController->getUser($post->author_id),
+                'media_1' => $post->media_1,
+                'media_2' => $post->media_2,
+                'media_3' => $post->media_3,
+                'media_4' => $post->media_4,
+                'post_date' => $post->post_date->format('Y-m-d H:i:s'),
+                'is_liked' => $likeController->isLiked($post->id),
+                'likes' => intval($likeController->countLikes($post->id)),
+                'comments' => Post::orderByDesc('post_date')->where('parent', $post->id)->get()->count(),
+            ]);
+        }
+
+        return $data;
+    }
 
 
     public function destroy(Request $request)

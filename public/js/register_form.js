@@ -33,6 +33,9 @@ $(function(){
                         theme:'mint',
                         text:JSON.parse(xhr.responseText).error
                     }).show();
+                },
+                500:function(xhr){
+                    console.log(xhr);
                 }
             }
         });

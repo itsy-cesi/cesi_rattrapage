@@ -19,7 +19,8 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all(['id', 'name', 'password'])
-            ->map(function ($user) {
+            ->map(function ($user)
+            {
                 return [
                     'id' => $user->id,
                     'name' => $user->name
@@ -33,50 +34,51 @@ class UserController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validator = Validator::make(
-        $request->all(),
-        [
-            'name' => 'required|unique:users,name',
-            'email' => 'required|email|unique:users,email',
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name' => 'required|unique:users,name',
+                'email' => 'required|email|unique:users,email',
+                'password' => [
+                    'required',
+                    'confirmed',
+                    Password::min(8)
+                        ->letters()
+                        ->mixedCase()
+                        ->numbers()
+                        ->symbols()
+                ],
+                'password_confirmation' => 'required',
+                'dob' => array(
+                    'required',
+                    'before_or_equal:' . date('Y-m-d', strtotime("-13 years")),
+                    'after_or_equal:' . date('Y-m-d', strtotime("-100 years"))
+                ),
+                'gender' => 'required|in:male,female,other',
             ],
-            'password_confirmation' => 'required',
-            'dob' => array(
-                'required',
-                'before_or_equal:' . date('Y-m-d', strtotime("-13 years")),
-                'after_or_equal:' . date('Y-m-d', strtotime("-100 years"))
-            ),
-            'gender' => 'required|in:male,female,other',
-        ],
-        [
-            'name.unique' => 'The name has already been taken',
-            'dob.after_or_equal' => 'You must be at least 13 years old to register',
-            'dob.before_or_equal' => 'You must be less than 100 years old to register',
-        ]
-    );
+            [
+                'name.unique' => 'The name has already been taken',
+                'dob.after_or_equal' => 'You must be at least 13 years old to register',
+                'dob.before_or_equal' => 'You must be less than 100 years old to register',
+            ]
+        );
 
-    if ($validator->fails()) {
-        return response()->json([            'errors' => $validator->errors(),            'message' => 'Validation failed',        ], Response::HTTP_BAD_REQUEST);
+        if ($validator->fails())
+        {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Validation failed',], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = User::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'dob' => $request->input('dob'),
+            'gender' => $request->input('gender'),
+        ]);
+
+        return response()->json(['data' => $user, 'redirect' => route('login'),], Response::HTTP_CREATED);
     }
-
-    $user = User::create([
-        'name' => $request->input('name'),
-        'email' => $request->input('email'),
-        'password' => Hash::make($request->input('password')),
-        'dob' => $request->input('dob'),
-        'gender' => $request->input('gender'),
-    ]);
-
-    return response()->json([        'data' => $user,        'redirect' => route('login'),    ], Response::HTTP_CREATED);
-}
 
 
     public function getUserByEmailAndPassword(Request $request)
@@ -89,16 +91,20 @@ class UserController extends Controller
         $user = User::where('email', $email)->first();
 
         // Check if the user exists and the password is correct
-        if ($user && Hash::check($password, $user->password)) {
+        if ($user && Hash::check($password, $user->password))
+        {
             // Check if there is an existing token for the user
             $token = Token::where('user_id', $user->id)->first();
 
-            if ($token) {
+            if ($token)
+            {
                 // If there is an existing token, update the expiration date and user agent
                 $token->expiration_date = Carbon::now()->addDays(7);
                 $token->user_agent = $userAgent;
                 $token->save();
-            } else {
+            }
+            else
+            {
                 // If there is no existing token, create a new one
                 $token = new Token();
                 $token->user_id = $user->id;
@@ -123,7 +129,9 @@ class UserController extends Controller
                 ],
                 'redirect' => route('home'),
             ], Response::HTTP_OK);
-        } else {
+        }
+        else
+        {
             // Return an error response if the credentials are invalid
             return response()->json([
                 'error' => 'Invalid email or password',
@@ -139,7 +147,8 @@ class UserController extends Controller
         // Find the token for the given user ID
         $token = Token::where('user_id', $userId)->first();
 
-        if ($token) {
+        if ($token)
+        {
             // Update the token's expiration date and user agent
             $token->expiration_date = Carbon::now()->addDays(7);
             $token->user_agent = $userAgent;
@@ -155,7 +164,9 @@ class UserController extends Controller
                 ],
                 'message' => 'Token retrieved successfully',
             ], Response::HTTP_OK);
-        } else {
+        }
+        else
+        {
             // Return an error response if no token was found for the given user ID
             return response()->json([
                 'error' => 'No token found for the given user ID',
@@ -174,6 +185,8 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'picture' => $user->picture ?? 'https://robohash.org/{{ $user->id }}.png?set=set5',
+                'banner' => $user->banner ?? 'https://i.pinimg.com/736x/93/4f/c2/934fc23b8db01e0113a8512fb6311d8f.jpg',
                 'dob' => $user->dob,
                 'gender' => $user->gender,
                 'last_connection' => $last_connection,
@@ -184,13 +197,13 @@ class UserController extends Controller
         ], Response::HTTP_OK);
     }
     public function getUser($id)
-{
-    $user = User::findOrFail($id);
+    {
+        $user = User::findOrFail($id);
 
-    return [
-        'id' => $user->id,
-        'name' => $user->name];
-}
+        return [
+            'id' => $user->id,
+            'name' => $user->name];
+    }
     public function update(Request $request, User $user)
     {
         $request->validate([
@@ -219,5 +232,29 @@ class UserController extends Controller
         return response()->json([
             'message' => 'User deleted successfully',
         ], Response::HTTP_OK);
+    }
+
+    public function GetUserByName($name)
+    {
+        $user = User::where('name', $name)
+            ->first();
+
+        if (!$user)
+        {
+            return redirect('home');
+        }
+
+        return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'picture' => $user->picture ?? 'https://robohash.org/{{ $user->id }}.png?set=set5',
+                'banner' => $user->banner ?? 'https://i.pinimg.com/736x/93/4f/c2/934fc23b8db01e0113a8512fb6311d8f.jpg',
+                'dob' => $user->dob,
+                'gender' => $user->gender,
+                'last_connection' => $user->last_connection,
+                'created_at' => $user->created_at,
+                'email_verified' => $user->email_verified_at !== null,
+        ];
     }
 }
