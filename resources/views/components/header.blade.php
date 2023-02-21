@@ -19,6 +19,8 @@
                 <strong>{{ Auth::user()->name }}</strong>
             </a>
             <ul class="dropdown-menu text-small shadow" style="">
+                <li><a class="dropdown-item" href="{{ route('user', Auth::user()->name) }}">Account</a></li>
+                <hr>
                 <li><a class="dropdown-item" href="{{ route('logout') }}">Sign out</a></li>
             </ul>
         </div>

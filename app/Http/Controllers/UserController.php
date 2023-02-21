@@ -185,7 +185,7 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'picture' => $user->picture ?? 'https://robohash.org/{{ $user->id }}.png?set=set5',
+                'picture' => $user->picture ?? "https://robohash.org/{$user->name}.png?set=set5",
                 'banner' => $user->banner ?? 'https://i.pinimg.com/736x/93/4f/c2/934fc23b8db01e0113a8512fb6311d8f.jpg',
                 'dob' => $user->dob,
                 'gender' => $user->gender,
@@ -202,7 +202,16 @@ class UserController extends Controller
 
         return [
             'id' => $user->id,
-            'name' => $user->name];
+            'name' => $user->name,
+            'email' => $user->email,
+            'picture' => $user->picture ?? "https://robohash.org/{$user->name}.png?set=set5",
+            'banner' => $user->banner ?? 'https://i.pinimg.com/736x/93/4f/c2/934fc23b8db01e0113a8512fb6311d8f.jpg',
+            'dob' => $user->dob,
+            'gender' => $user->gender,
+            'last_connection' => $user->last_connection,
+            'created_at' => $user->created_at,
+            'email_verified' => $user->email_verified_at !== null,
+    ];
     }
     public function update(Request $request, User $user)
     {
@@ -248,7 +257,7 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'picture' => $user->picture ?? 'https://robohash.org/{{ $user->id }}.png?set=set5',
+                'picture' => $user->picture ?? "https://robohash.org/{$user->name}.png?set=set5",
                 'banner' => $user->banner ?? 'https://i.pinimg.com/736x/93/4f/c2/934fc23b8db01e0113a8512fb6311d8f.jpg',
                 'dob' => $user->dob,
                 'gender' => $user->gender,

@@ -97,7 +97,7 @@ class PostController extends Controller
         $likeController = new LikeController();
         $post = Post::find($id);
         return [
-            'parent' => '',
+            'parent' => $post->parent,
             'id' => $post->id,
             'message' => $post->message,
             'author' => $userController->getUser($post->author_id),

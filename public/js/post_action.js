@@ -44,7 +44,6 @@ function handlePostActions() {
             const { target } = event;
             const action = $(target).closest('a[action="post_button"]');
 
-            action.toggleClass("text-danger text-dark");
             $.ajax({
                 type: "POST",
                 url: "/api/like",
@@ -54,6 +53,7 @@ function handlePostActions() {
                 success: (data) => {
                     json = JSON.parse(data);
                     action.find('*[name="count_like"]').html(json['likes']);
+                    action.toggleClass("text-danger text-dark");
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     console.error(`Error: ${errorThrown}`);

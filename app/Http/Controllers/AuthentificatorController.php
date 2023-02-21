@@ -107,7 +107,7 @@ class AuthentificatorController extends Controller
                 'token' => '',
             ],
             'type' => 'redirect',
-            'redirect' => route('home'),
+            'redirect' => route('login'),
             'message' => 'Registration successful',
         ], Response::HTTP_CREATED);
 
