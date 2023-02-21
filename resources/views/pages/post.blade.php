@@ -40,10 +40,14 @@ $value = $postController->show($id);
                         </form>
                     @endif
                     <?php
-                foreach ($value['comment'] as $key => $value):
-                ?>
-                    @include('components.post')
-                    <?php endforeach; ?>
+                    if (count($value['comment']) != 0):
+                    ?>
+                    <b>Responses:</b>
+                    <div class="ms-4">
+                    <?php foreach ($value['comment'] as $key => $value): ?>
+                        @include('components.post')
+                    <?php endforeach; endif;?>
+                </div>
                 </div>
             </div>
         </div>
