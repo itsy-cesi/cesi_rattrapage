@@ -9,21 +9,24 @@
                                         alt="" width="32" height="32" class="rounded-circle me-2" />
                                     <strong>{{ $value['author']['name'] }}</strong>
                                 </a>
-                                @if ($value['author']['name'] == (Auth::user()->name ?? ''))
-                                    <div class="dropdown">
-                                        <a class="btn" role="button" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item bg-danger text-white" action="delete_post"
-                                                    target="{{ route('api.delete_post') }}"
-                                                    post_id="{{ $value['id'] }}"><i class="fa fa-trash"
-                                                        aria-hidden="true"></i><span class="ms-3">Delete
-                                                        post</span></a></li>
-                                        </ul>
-                                    </div>
-                                @endif
+                                <div class="d-flex align-items-center">
+                                    <small>{{ $value['post_date'] }}</small>
+                                    @if ($value['author']['name'] == (Auth::user()->name ?? ''))
+                                        <div class="dropdown">
+                                            <a class="btn" role="button" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item bg-danger text-white" action="delete_post"
+                                                        target="{{ route('api.delete_post') }}"
+                                                        post_id="{{ $value['id'] }}"><i class="fa fa-trash"
+                                                            aria-hidden="true"></i><span class="ms-3">Delete
+                                                            post</span></a></li>
+                                            </ul>
+                                        </div>
+                                    @endif
+                                </div>
                             </h5>
                             <p class="card-text">{{ $value['message'] }}</p>
                             <?php
@@ -41,6 +44,7 @@
                                         alt="" width="32" height="32" class="rounded-circle me-2" />
                                     <strong>{{ $parent['author']['name'] }}</strong>
                                 </span>
+                                <small>{{ $parent['post_date'] }}</small>
                                 <p class="p-3 pb-0">{{ $parent['message'] }}</p>
                             </div>
                             <?php endif; ?>
