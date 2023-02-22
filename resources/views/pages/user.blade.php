@@ -44,10 +44,10 @@ $user = $userController->GetUserByName($name);
                         break;
                 }
                 ?>
-                <img src="https://img.icons8.com/office/32/null/{{ $gender }}.png"/>
+                <img src="https://img.icons8.com/office/32/null/{{ $gender }}.png" />
             </div>
-            @if (Auth::check())
-            <hr>
+            @if (Auth::check() && Auth::user()->name == $name)
+                <hr>
                 <form name="post_form" class="w-75 mx-auto p-5 py-0" action="{{ route('api.make_post') }}">
                     <div class="input-group d-flex justify-content-center">
                         <textarea class="form-control" name="message" id="post_message"></textarea>
