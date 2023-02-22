@@ -53,6 +53,33 @@ class AuthentificatorController extends Controller
         ], Response::HTTP_OK);
     }
 
+    public function change_password(Request $request){
+        $userController = new UserController();
+        $validator = Validator::make($request->all(), [
+            'new_password' => [
+                'required',
+                'confirmed',
+                Password::min(8)->letters()->mixedCase()->numbers()->symbols(),
+            ],
+            'new_password_confirmation' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'type' => 'input_validation',
+                'error' => $validator->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $user = $userController->getUserByEmailAndPassword($request);
+
+        if (!$user){
+            return array('error'=>'User and password don\'t match');
+        }
+
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [

@@ -253,7 +253,7 @@ class UserController extends Controller
             return redirect('home');
         }
 
-        return [
+        return array(
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
@@ -264,6 +264,6 @@ class UserController extends Controller
                 'last_connection' => $user->last_connection,
                 'created_at' => $user->created_at,
                 'email_verified' => $user->email_verified_at !== null,
-        ];
+        );
     }
 }
