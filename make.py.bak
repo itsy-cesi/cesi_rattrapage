@@ -1,9 +1,0 @@
-Invoke-WebRequest -Uri https://windows.php.net/downloads/releases/php-8.1.1-Win32-vs17-x64.zip -OutFile C:\php.zip
-Expand-Archive -Path C:\php.zip -DestinationPath C:\php
-[System.Environment]::SetEnvironmentVariable('Path', "$($env:Path);C:\php", [System.EnvironmentVariableTarget]::Machine)
-$oldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).Path
-Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $oldPath + ';C:\php'
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-[System.Environment]::SetEnvironmentVariable('Path', "$($env:Path);C:\Users\$($env:UserName)\AppData\Roaming\Composer\vendor\bin", [System.EnvironmentVariableTarget]::User)

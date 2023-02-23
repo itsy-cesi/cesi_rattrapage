@@ -14,10 +14,6 @@ $user = $userController->GetUserByName($name);
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{{ config('app.name') }}</title>
     @include('imports/cdns')
-    <script src="{{ URL::asset('js/textarea.js') }}" defer></script>
-    <script src="{{ URL::asset('js/make_post.js') }}" defer></script>
-    <script src="{{ URL::asset('js/post_action.js') }}" defer></script>
-    <link rel="stylesheet" href="{{ URL::asset('css/textarea.css') }}">
 </head>
 
 <body>

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -12,7 +13,6 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\Token;
-
 
 class UserController extends Controller
 {
@@ -174,7 +174,13 @@ class UserController extends Controller
         }
     }
 
-    public function show(User $user)
+    /**
+     * show
+     *
+     * @param  User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(User $user) : \Illuminate\Http\JsonResponse
     {
         $created_at = $user->created_at->formatLocalized('%d/%m/%Y %H:%M:%S');
         $last_connection = $user->last_connection ? $user->last_connection->formatLocalized('%d/%m/%Y %H:%M:%S') : null;
@@ -196,6 +202,7 @@ class UserController extends Controller
             'message' => 'User retrieved successfully',
         ], Response::HTTP_OK);
     }
+
     public function getUser($id)
     {
         $user = User::findOrFail($id);

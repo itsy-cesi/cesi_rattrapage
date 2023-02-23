@@ -56,6 +56,7 @@ class AuthentificatorController extends Controller
     public function change_password(Request $request){
         $userController = new UserController();
         $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
             'new_password' => [
                 'required',
                 'confirmed',
@@ -72,12 +73,17 @@ class AuthentificatorController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $user = $userController->getUserByEmailAndPassword($request);
-
-        if (!$user){
-            return array('error'=>'User and password don\'t match');
+        if(!Hash::check($request->old_password, auth()->user()->password)){
+            return response()->json([
+                "error" => "Old password doesn't match!",
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
+        User::whereId(auth()->user()->id)->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return array('success'=>'Password changed');
     }
 
     public function register(Request $request)

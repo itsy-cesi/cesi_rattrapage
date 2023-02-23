@@ -28,7 +28,7 @@ Route::get('/user/{name}', function ($name)
 
 Route::get('/settings', function ()
 {
-    return view('pages/settings', ['required' => ['bootstrap', 'jquery', 'font-awesome']]);
+    return view('pages/settings', ['required' => ['bootstrap', 'jquery', 'font-awesome', 'noty']]);
 })->name('setting');
 
 Route::any(

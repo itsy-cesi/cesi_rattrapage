@@ -30,3 +30,9 @@ Route::post(
     '/like',
     [LikeController::class, 'like']
 )->name('api.like');
+
+Route::post(
+    '/change_password',
+    [AuthentificatorController::class, 'change_password']
+)->name('api.change_password');
+
